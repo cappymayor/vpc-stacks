@@ -1,12 +1,14 @@
+# Create private subnet group
 resource "aws_db_subnet_group" "custom" {
-  name       = "main"
-  subnet_ids = [aws_subnet.private-1.id, aws_subnet.private-2.id ]
+  name       = "public-rds-subnet-group"
+  subnet_ids = ["subnet-02906b242c3906333", "subnet-05aeeee8147943381" ]
 
   tags = {
     Name = "My DB subnet group"
   }
 }
 
+# Create an RDS instance for internal use within VPC 
 resource "aws_db_instance" "default" {
   allocated_storage    = 10
   identifier           = "cde-db"
@@ -16,6 +18,7 @@ resource "aws_db_instance" "default" {
   instance_class       = "db.t3.micro"
   username             = "foo"
   password             = "foobarbaz"
+  publicly_accessible = true
   skip_final_snapshot  = true
-  db_subnet_group_name = aws_db_subnet_group.custom.id
+  db_subnet_group_name = "rds-subnet-group"
 }
