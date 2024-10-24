@@ -1,10 +1,10 @@
 # Create private subnet group
-resource "aws_db_subnet_group" "custom" {
+resource "aws_db_subnet_group" "private_custom_subnet_group" {
   name       = "public-rds-subnet-group"
-  subnet_ids = ["subnet-02906b242c3906333", "subnet-05aeeee8147943381" ]
+  subnet_ids = [aws_subnet.private_1, aws_subnet.private_2]
 
   tags = {
-    Name = "My DB subnet group"
+    Name = "private subnet group"
   }
 }
 
@@ -20,5 +20,5 @@ resource "aws_db_instance" "default" {
   password             = "foobarbaz"
   publicly_accessible = true
   skip_final_snapshot  = true
-  db_subnet_group_name = "rds-subnet-group"
+  db_subnet_group_name = aws_db_subnet_group.private_custom_subnet_group.id
 }
